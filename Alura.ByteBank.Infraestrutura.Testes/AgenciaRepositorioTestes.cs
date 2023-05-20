@@ -3,21 +3,27 @@ using Alura.ByteBank.Dominio.Entidades;
 using Alura.ByteBank.Dominio.Interfaces.Repositorios;
 using Alura.ByteBank.Infraestrutura.Testes.Servico;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Alura.ByteBank.Infraestrutura.Testes
 {
     public class AgenciaRepositorioTestes
     {
         private readonly IAgenciaRepositorio _repositorio;
+        public ITestOutputHelper _console;
 
-        public AgenciaRepositorioTestes()
+        public AgenciaRepositorioTestes(ITestOutputHelper console)
         {
+            _console = console;
+            _console.WriteLine("Construtor invocado");
+
             var service = new ServiceCollection()
                 .AddTransient<IAgenciaRepositorio, AgenciaRepositorio>();
 
@@ -62,7 +68,7 @@ namespace Alura.ByteBank.Infraestrutura.Testes
         public void TestaRemoverInformacaoDeterminadaAgencia()
         {
             //Act
-            var atualizado = _repositorio.Excluir(3);
+            var atualizado = _repositorio.Excluir(2);
             //Assert
             Assert.True(atualizado);
         }
@@ -96,6 +102,20 @@ namespace Alura.ByteBank.Infraestrutura.Testes
 
             //Assert
             Assert.True(adicionado);
+        }
+
+        [Fact]
+        public void TestaObterAgenciasMock()
+        {
+            //Arange
+            var bytebankRepositorioMock = new Mock<IByteBankRepositorio>();
+            var mock = bytebankRepositorioMock.Object;
+
+            //Act
+            var lista = mock.BuscarAgencias();
+
+            //Assert
+            bytebankRepositorioMock.Verify(b => b.BuscarAgencias());
         }
 
     }
