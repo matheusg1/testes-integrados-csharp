@@ -34,7 +34,7 @@ namespace Alura.ByteBank.Infraestrutura.Testes
             Assert.True(listaContas.Any());
         }
 
-        
+
         [Fact]
         public void TestaObterContaPorId()
         {
@@ -57,5 +57,51 @@ namespace Alura.ByteBank.Infraestrutura.Testes
             Assert.NotNull(conta);
         }
 
+        [Fact]
+        public void TestaAtualizaSaldoDeterminadaConta()
+        {
+            //Arrange
+            var conta = _repositorio.ObterPorId(1);
+            double saldoNovo = 15;
+            conta.Saldo = saldoNovo;
+
+            //Act
+            var atualizado = _repositorio.Atualizar(1, conta);
+
+            //Assert
+            Assert.True(atualizado);
+        }
+
+        [Fact]
+        public void TestaInsereNovaContaCorrenteNoBD()
+        {
+            //Arrange
+            var conta = new ContaCorrente()
+            {
+                Saldo = 10,
+                Identificador = Guid.NewGuid(),
+                Cliente = new Cliente()
+                {
+                    Nome = "Kent Nelson",
+                    CPF = "486.074.980-45",
+                    Identificador = Guid.NewGuid(),
+                    Profissao = "Bancário",
+                    Id = 1
+                },
+                Agencia = new Agencia()
+                {
+                    Nome = "Agencia Central Coast City",
+                    Identificador = Guid.NewGuid(),
+                    Id = 1,
+                    Endereco = "Rua das Flores,25",
+                    Numero = 147
+                }
+            };
+
+            //Act
+            var resultado = _repositorio.Adicionar(conta);
+            //Assert
+            Assert.True(resultado);
+        }
     }
 }
